@@ -355,4 +355,44 @@ Viewing that seems to work:
 
 ![](notes/amass_smplx.png)
 
+2nd February 2022
+=================
 
+When running the fitting procedure to convert between models I did notice that
+the loss would not go to zero. Maybe the suggests that the optimization
+procedure is having some issues? So, I'm going to look more closely at that.
+
+Copying one `.obj` file into a separate directory to convert it on it's own.
+
+Creating experiment config pointing at this directory called
+`smplh2smplx_onepose.yaml`.
+
+Full log running that is [here](./notes/onepose.log)
+
+Looking at the log I'm seeing warnings about the gradient being evaluated using
+`create_graph=True` in a way that can cause a memory leak. Also the final loss
+is 1191.08.
+
+What if I run the fit for much longer?
+
+After 1000 iterations the final loss is still 1189.14. Viewing the output `.obj`
+and it is still mangled.
+
+Trying the l-BFGS optimizer because it's PyTorch built-in.
+
+I don't get any gradient warnings with l-BFGS, which is nice.
+
+Loss stops improving at 5945.79.
+
+Trying Adam, final loss is 1462.28 after 1000 iterations.
+
+It does still seem to be improving, running for 10,000 iterations.
+
+There appear to be two fitting steps, the first very little improves, and on the
+second things start to improve.
+
+After 10,000 iterations of Adam it finished at 1197.79. Optimized `.obj` file is
+still mangled.
+
+Seems like the optimization is configured wrong or intialized wrong or the
+optimizers are all broken.
