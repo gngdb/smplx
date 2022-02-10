@@ -447,7 +447,7 @@ Then viewed it with `view_pkl.py`:
 python view_pkl.py --model-folder ../models --motion-file ../output/merged.pkl
 ```
 
-![](./notes/success.pkl)
+![](./notes/success.png)
 
 `view_pkl.py` is very rudimentary, it'd be better if I had controls to move to
 the next frame but it appears on first glance to be fine.
