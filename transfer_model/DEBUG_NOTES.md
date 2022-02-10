@@ -396,3 +396,67 @@ still mangled.
 
 Seems like the optimization is configured wrong or intialized wrong or the
 optimizers are all broken.
+
+9th February 2022
+=================
+
+After contacting the authors Vassilis Choutas looked at my code and said that
+I needed to use `process=False` when saving the `.obj` files with trimesh.
+Making that change now and saving the `.obj` files again.
+
+Running the same conversion script again, but on only one of the `.obj` files
+after copying it into a separate `meshes` subdir.
+
+```
+python -m transfer_model --exp-cfg config_files/smplh2smplx_onepose.yaml
+```
+
+`trust-ncg` optimizer is stalling but finished. Final loss was 0.517.
+
+Fit looks good in the output `.obj` file, left is before (SMPL-H) right is after
+(SMPL-X):
+
+![](./notes/obj_convert_success.png)
+
+Sidenote: changing the optimizer to l-BFGS does not change the final loss and
+the output appears to be the same.
+
+Now converting the entire sequence:
+
+```
+python -m transfer_model --exp-cfg config_files/smplh2smplx_as.yaml
+```
+
+Estimated run time is currently 11 hours on my laptop to process the 601 frames.
+That's not a problem for me because I can leave it running overnight this time.
+
+10th February 2022
+==================
+
+Finished in 13:40.
+
+Trying to merge the output files again.
+
+```
+python merge_output.py --gender neutral ../output
+```
+
+Then viewed it with `view_pkl.py`:
+
+```
+python view_pkl.py --model-folder ../models --motion-file ../output/merged.pkl
+```
+
+![](./notes/success.pkl)
+
+`view_pkl.py` is very rudimentary, it'd be better if I had controls to move to
+the next frame but it appears on first glance to be fine.
+
+So, the full process was:
+
+```
+python write_obj.py --model-folder ../models/ --motion-file ../transfer_data/support_data/github_data/amass_sample.npz --output-folder ../transfer_data/meshes/amass_sample/
+python -m transfer_model --exp-cfg config_files/smplh2smplx_as.yaml
+python merge_output.py --gender neutral ../output
+```
+

@@ -9,9 +9,8 @@ edge_fitting:
     per_part: False
 
 optim:
-    type: 'adam'
-    lr: 0.1
-    maxiters: 10000
+    type: 'lbfgs'
+    maxiters: 100
     gtol: 1e-06
 
 body_model:
